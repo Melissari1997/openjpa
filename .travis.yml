@@ -5,9 +5,9 @@ addons:
   sonarcloud:
     organization: "melissari1997"
     token:
-      secure: 4869f39d38c788d38801fbbaddb677054c1b328e # encrypted value of your token
+      secure: f8a947ecbc18a130578df1fb7d40d39039681071 # encrypted value of your token
 
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-   - mvn verify -DfailIfNoTests=false sonar:sonar -Dsonar.projectKey=melissari1997_openjpa 
+   - mvn verify -DfailIfNoTests=false sonar:sonar -Dsonar.projectKey=Melissari1997_openjpa 
 
