@@ -1,7 +1,13 @@
 language: java
 jdk:
   - openjdk8
+addons:
+  sonarcloud:
+    organization: "melissari1997"
+    token:
+      secure: 4869f39d38c788d38801fbbaddb677054c1b328e # encrypted value of your token
 
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-  - mvn clean verify 
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+
