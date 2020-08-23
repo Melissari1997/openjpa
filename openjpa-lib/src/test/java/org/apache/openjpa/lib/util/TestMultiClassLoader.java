@@ -3,6 +3,12 @@ package org.apache.openjpa.lib.util;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,105 +29,96 @@ import org.junit.Test;
  * under the License.
  */
 
-import java.net.URL;
-
-import org.junit.Test;
+import java.util.Collection;
 import org.junit.Before;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the {@link MultiClassLoader}.
  *
- * @author Abe White
+ * @author Paolo Melissari
  */
-public class TestMultiClassLoader {
+@RunWith(Enclosed.class)
+public class TestMultiClassLoader{
+	private static ClassLoader SYSTEM_LOADER = MultiClassLoader.class.getClassLoader();
+    private static ClassLoader THREAD_LOADER = MultiClassLoader.THREAD_LOADER;
+    private static MultiClassLoader _loader = new MultiClassLoader(THREAD_LOADER,SYSTEM_LOADER);
 
-    private ClassLoader SYSTEM_LOADER = MultiClassLoader.class.getClassLoader();
 
-    private MultiClassLoader _loader = new MultiClassLoader();
-
-    @Before
-    public void setUp() {
-        _loader.addClassLoader(MultiClassLoader.THREAD_LOADER);
-        _loader.addClassLoader(SYSTEM_LOADER);
+    public static class TestFindClass{
+    	
+	    @Test
+	    public void FindClassTest(){
+	    	try {
+				_loader.findClass(null);
+				fail("findClass should fail with null argument");
+			} catch (ClassNotFoundException e) {
+			}
+			
+			try {
+				_loader.findClass(" ");
+				fail("findClass should fail with empty argument");
+			} catch (ClassNotFoundException e) {
+			}
+			try {
+				_loader.findClass("java.lang.Integer");
+			} catch (ClassNotFoundException e) {
+				fail("findClass should not fail with java.lang.Integer argument");
+			}
+	    	
+	    }
     }
-
-    /**
-     * Tests basic add/remove functionality.
-     */
-    @Test
-    public void testBasic() {
-        assertEquals(2, _loader.size());
-        assertTrue(!_loader.isEmpty());
-        assertTrue(_loader.getClassLoaders()[0] == SYSTEM_LOADER);
-        assertEquals(Thread.currentThread().getContextClassLoader(),
-            _loader.getClassLoaders()[1]);
-        assertTrue(_loader.getClassLoader(0) == SYSTEM_LOADER);
-        assertTrue(!_loader.addClassLoader(MultiClassLoader.THREAD_LOADER));
-
-        FooLoader foo = new FooLoader();
-        assertTrue(_loader.addClassLoader(foo));
-        assertTrue(!_loader.addClassLoader(foo));
-        assertEquals(3, _loader.size());
-        assertEquals(foo, _loader.getClassLoaders()[2]);
-
-        assertTrue(_loader.removeClassLoader(MultiClassLoader.THREAD_LOADER));
-        assertTrue(!_loader.removeClassLoader(MultiClassLoader.THREAD_LOADER));
-        assertEquals(2, _loader.size());
-        assertTrue(_loader.getClassLoaders()[0] == SYSTEM_LOADER);
-        assertEquals(foo, _loader.getClassLoaders()[1]);
-
-        assertTrue(_loader.removeClassLoader(foo));
-        assertTrue(_loader.removeClassLoader(SYSTEM_LOADER));
-        assertTrue(_loader.isEmpty());
-
-        MultiClassLoader loader2 = new MultiClassLoader();
-        loader2.addClassLoader(MultiClassLoader.THREAD_LOADER);
-        loader2.addClassLoader(SYSTEM_LOADER);
-        assertTrue(_loader.addClassLoaders(loader2));
-        assertTrue(!_loader.addClassLoaders(loader2));
-        FooLoader foo2 = new FooLoader();
-        loader2.addClassLoader(foo);
-        loader2.addClassLoader(foo2);
-        assertTrue(_loader.addClassLoaders(1, loader2));
-        ClassLoader[] loaders = _loader.getClassLoaders();
-        assertTrue(loaders[0] == SYSTEM_LOADER);
-        assertEquals(Thread.currentThread().getContextClassLoader(),
-            loaders[3]);
-        assertEquals(foo, loaders[1]);
-        assertEquals(foo2, loaders[2]);
-    }
-
-
-    /**
-     * Test finding resources.
-     */
-    @Test
-    public void testGetResource() {
-        assertNull(_loader.getResource("foo"));
-        _loader.addClassLoader(new FooLoader());
-        assertNotNull(_loader.getResource("foo"));
-    }
-
-
-    private static final class FooLoader extends ClassLoader {
-
-        @Override
-        protected Class findClass(String name) throws ClassNotFoundException {
-            if ("foo".equals(name))
-                return Integer.class;
-            throw new ClassNotFoundException(name);
-        }
-
-        @Override
-        protected URL findResource(String name) {
-            try {
-                if ("foo".equals(name))
-                    return new URL("file:///dev/null");
-            } catch (Exception e) {
-            }
-            return null;
-        }
-    }
+    
+	@RunWith(Parameterized.class)
+	public static class TestMultiClassLoaderaddClassLoaders {
+	    private ClassLoader FOO_LOADER = new FooLoader();
+	    private ClassLoader FOO_LOADER2 = new FooLoader2();
+	    private static MultiClassLoader _loader0 = new MultiClassLoader();
+	    private static MultiClassLoader _loader1 = new MultiClassLoader();
+	    private static MultiClassLoader _loader2 = new MultiClassLoader();
+	    private static MultiClassLoader _loader3 = new MultiClassLoader();
+	    private int index;
+	    private MultiClassLoader multi;
+	    private boolean expectedResult;
+	    
+	    @Before
+	    public void setUp() {
+	        _loader1.addClassLoader(THREAD_LOADER);
+	        _loader1.addClassLoader(SYSTEM_LOADER);
+	        _loader2.addClassLoader(FOO_LOADER);
+	        _loader2.addClassLoader(FOO_LOADER2);
+	        _loader3.addClassLoader(THREAD_LOADER);
+	        _loader3.addClassLoader(FOO_LOADER);
+	    }
+	  
+	    @Parameterized.Parameters
+	    public static Collection<Object[]> ClassLoaderParameters() {
+	    	return Arrays.asList(new Object[][] {
+	    		//Test suite minimale
+	    		{-1, null, false},
+	    		{0, _loader0, false},
+	    		{0, _loader1, false},
+	    		{0, _loader2, true},
+	    		{0, _loader3, true},
+	    		});
+	    };
+	    
+	    public TestMultiClassLoaderaddClassLoaders(int index, MultiClassLoader multi, boolean expectedResult) {
+	    	this.index = index;
+	    	this.multi = multi;
+	    	this.expectedResult = expectedResult;
+	    }
+	
+	    @Test
+	    public void TestaddClassLoaders() {
+	    	boolean actualResult = _loader.addClassLoaders(index,multi);
+	    	assertEquals(actualResult, expectedResult);
+	    	
+	    }
+	    private static final class FooLoader extends ClassLoader {
+	    }
+	    
+	    private static final class FooLoader2 extends ClassLoader {
+	
+	    }
+	}
 }
