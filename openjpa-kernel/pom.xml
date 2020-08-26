@@ -171,16 +171,9 @@
                         <version>1.5.2</version>
                         <configuration>
                             <targetClasses>
-                                <param>org.apache.openjpa.util.CacheMap</param>
                                 <param>org.apache.openjpa.util.ProxyManagerImpl</param>
                             </targetClasses>
-                            <targetTests>
-                                <param>org.apache.openjpa.util.PutCacheMapTest</param>
-                                <param>org.apache.openjpa.util.RemoveCacheMapTest</param>
-                                <param>org.apache.openjpa.util.PinCacheMapTest</param>
-                                <param>org.apache.openjpa.util.CopyCustomTest</param>
-                                <param>org.apache.openjpa.util.CopyArrayTest</param>
-                                <param>org.apache.openjpa.util.NewCustomProxyTest</param>
+                            <targetTests>			                                				<param>org.apache.openjpa.util.TestProxyManager</param>
                             </targetTests>
                             <avoidCallsTo>
                                 <avoidCallsTo>java.util.logging</avoidCallsTo>

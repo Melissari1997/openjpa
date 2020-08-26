@@ -98,12 +98,7 @@
         <bval.version>1.1.2</bval.version>
         <jmock.version>2.9.0</jmock.version>
         <automatic-module-name>-SUBMODULES-NEED-TO-OVERRIDE-THIS-</automatic-module-name>
-        <sonar.projectKey>francesco1997:${project.groupId}:${project.artifactId}</sonar.projectKey>
-        <sonar.links.homepage>https://github.com/francesco1997/openjpa</sonar.links.homepage>
-        <sonar.links.ci>https://travis-ci.com/francesco1997/openjpa</sonar.links.ci>
-        <sonar.links.scm>https://github.com/francesco1997/openjpa</sonar.links.scm>
-        <sonar.links.issue>https://github.com/francesco1997/openjpa/issues</sonar.links.issue>
-        <aggregate.report.dir>tests/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
+	<aggregate.report.dir>jacoco-reports/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     </properties>
 
     <licenses>
