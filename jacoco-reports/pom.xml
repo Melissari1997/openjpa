@@ -18,13 +18,9 @@
   <name>jacoco-reports</name>
 
   <dependencies>
-    <dependency>
+     <dependency>
       <groupId>org.apache.openjpa</groupId>
-      <artifactId>openjpa-kernel</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-      <groupId>org.apache.openjpa</groupId>
-      <artifactId>openjpa-lib</artifactId>
+      <artifactId>testMelissari</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

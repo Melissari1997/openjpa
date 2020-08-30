@@ -47,6 +47,7 @@ import org.apache.openjpa.meta.FieldMetaData;
 import org.apache.openjpa.meta.JavaTypes;
 import org.apache.openjpa.meta.SequenceMetaData;
 import org.apache.openjpa.meta.ValueStrategies;
+
 /**
  * Helper for OpenJPA back-ends.
  *
@@ -58,7 +59,7 @@ public class ImplHelper {
     // Cache for from/to type assignments
     private static final Map _assignableTypes =
         new ConcurrentReferenceHashMap(ReferenceStrength.WEAK, ReferenceStrength.HARD);
-    
+
     // map of all new unenhanced instances active in this classloader
     public static final Map _unenhancedInstanceMap =
         new ConcurrentReferenceHashMap(ReferenceStrength.WEAK, ReferenceStrength.HARD) {
@@ -249,6 +250,7 @@ public class ImplHelper {
     public static boolean isAssignable(Class from, Class to) {
         if (from == null || to == null)
             return false;
+
         Boolean isAssignable = null;
         Map assignableTo = (Map) _assignableTypes.get(from);
         if (assignableTo == null) { // "to" cache doesn't exist, so create it...

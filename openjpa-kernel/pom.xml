@@ -44,7 +44,7 @@
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa-lib</artifactId>
             <version>${project.version}</version>
-        </dependency>
+	</dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jms_1.1_spec</artifactId>
@@ -57,6 +57,16 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+<dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.23</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.23</version>
+            </dependency>
         <dependency>
             <groupId>com.ibm.websphere</groupId>
             <artifactId>uow_api</artifactId>
@@ -172,8 +182,10 @@
                         <configuration>
                             <targetClasses>
                                 <param>org.apache.openjpa.util.ProxyManagerImpl</param>
+				<param>org.apache.openjpa.util.ImplHelper</param>
                             </targetClasses>
-                            <targetTests>			                                				<param>org.apache.openjpa.util.TestProxyManager</param>
+                            <targetTests>			                                				<param>testisw2.TestProxyManager</param>
+				<param>testisw2.TestImplHelper</param>
                             </targetTests>
                             <avoidCallsTo>
                                 <avoidCallsTo>java.util.logging</avoidCallsTo>
@@ -194,7 +206,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
+<profile>
             <id>data-flow-test</id>
             <build>
                 <plugins>
@@ -210,8 +222,8 @@
                         </executions>
                         <configuration>
                             <argLine>
-                                -javaagent:${ba-dua-dir}/ba-dua-agent-rt-0.4.1-SNAPSHOT-all.jar
-                                -Xbootclasspath/p:${ba-dua-dir}/ba-dua-agent-rt-0.4.1-SNAPSHOT-all.jar
+                                -javaagent:/home/paolo/Desktop/ISW2/ba-dua-agent-rt-0.4.1-SNAPSHOT-all.jar
+                                -Xbootclasspath/p:/home/paolo/Desktop/ISW2/ba-dua-agent-rt-0.4.1-SNAPSHOT-all.jar
                             </argLine>
                         </configuration>
                     </plugin>

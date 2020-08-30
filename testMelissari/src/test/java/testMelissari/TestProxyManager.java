@@ -1,4 +1,4 @@
-package org.apache.openjpa.util;
+package testMelissari;
 
 
 import static org.junit.Assert.*;
@@ -9,17 +9,25 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.openjpa.enhance.PCRegistry;
+import org.apache.openjpa.enhance.PersistenceCapable;
+import org.apache.openjpa.lib.log.Log;
+import org.apache.openjpa.util.ProxyManagerImpl;
 import org.junit.Before;
 
 /**
@@ -49,11 +57,14 @@ public class TestProxyManager {
 		
 		@Parameterized.Parameters
 	    public static Collection<Object[]> ClassLoaderParameters() {
+	    	Map orig = (Map) _proxyManager.newMapProxy(HashMap.class, null, null, null, false);
 	    	return Arrays.asList(new Object[][] {
 	    		//Test suite minimale
 	    		{null, null},
 	    		{emptyMap, emptyMap},
 	    		{notEmptyMap, notEmptyMap},
+	    		//adeguacy
+	    		{new HashMap(orig), (Map) _proxyManager.copyMap(orig)},
 	    		});
 	    };
 	    public TestCopyMap(Map<Integer, String> inputMap, Map<Integer, String> expectedMapResult) {
@@ -108,6 +119,8 @@ public class TestProxyManager {
 	    		{null, null},
 	    		{emptyArray, emptyArray},
 	    		{notEmptyArray, notEmptyArray},
+	    		
+	    		//adeguacy
 	    		{"", null},
 	    		});
 	    };
@@ -236,7 +249,44 @@ public class TestProxyManager {
 	        assertTrue(b1.getString() ==  ((CustomObject) b2).getString());
 	        assertTrue(b1.getNumber() ==  ((CustomObject) b2).getNumber());
 	    }
-
+	    
+	    @Test
+	    public void testCopyCustomNullObject() {
+	    	Object actualFooResult =  _proxyManager.copyCustom(null);
+	    	assertNull(actualFooResult);
+	    }
+	    
+	    @Test
+	    public void testCopyCustomProxy() {
+	    	CustomObject orig =  (CustomObject)_proxyManager.newCustomProxy(new CustomObject(),true);
+	    	CustomObject comp = new CustomObject();
+	    	assertBeansEqual(comp, (CustomObject)_proxyManager.copyCustom(orig) );
+	    }
+	    
+	    @Test
+	    public void testCopyCalendar() {
+	    	Calendar orig = new GregorianCalendar();
+	    	Calendar actualCalendarResult = (Calendar) _proxyManager.copyCustom(orig);
+	    	assertEquals(orig.getClass(),actualCalendarResult.getClass() );
+	    	assertEquals(orig,actualCalendarResult);
+	    }
+	    
+	    @Test
+	    public void testCopyCustomCollection() {
+	    	List orig = new ArrayList();
+	    	List actualCollectionResult = (List) _proxyManager.copyCustom(orig);
+	    	assertEquals(orig.getClass(),actualCollectionResult.getClass() );
+	    	assertEquals(orig,actualCollectionResult);
+	    }
+	    
+	    
+	    
+	    @Test
+	    public void testNotProxyable() {
+	    	final String orig = new String();
+	    	String actualStringResult = (String) _proxyManager.copyCustom(orig);
+	    	assertNull(actualStringResult);
+	    }
 	    
 	    
 	    public static class CustomDate extends Date {
@@ -299,5 +349,12 @@ public class TestProxyManager {
 	        }
 	    }
 	  }
+	private static  class CustomComparator implements Comparator {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            return ((Comparable) o1).compareTo(o2);
+        }
+    }
 	
 }

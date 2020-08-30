@@ -1,4 +1,4 @@
-package org.apache.openjpa.lib.util;
+package testisw2;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +30,8 @@ import java.util.Arrays;
  */
 
 import java.util.Collection;
+
+import org.apache.openjpa.lib.util.MultiClassLoader;
 import org.junit.Before;
 
 /**
@@ -41,11 +43,11 @@ import org.junit.Before;
 public class TestMultiClassLoader{
 	private static ClassLoader SYSTEM_LOADER = MultiClassLoader.class.getClassLoader();
     private static ClassLoader THREAD_LOADER = MultiClassLoader.THREAD_LOADER;
-    private static MultiClassLoader _loader = new MultiClassLoader(THREAD_LOADER,SYSTEM_LOADER);
+    
 
-
+/*
     public static class TestFindClass{
-    	
+    	private static MultiClassLoader _loader = new MultiClassLoader(SYSTEM_LOADER);
 	    @Test
 	    public void FindClassTest(){
 	    	try {
@@ -55,23 +57,29 @@ public class TestMultiClassLoader{
 			}
 			
 			try {
-				_loader.findClass(" ");
+				Class result  = _loader.findClass(" ");
 				fail("findClass should fail with empty argument");
 			} catch (ClassNotFoundException e) {
+				
 			}
-			try {
-				_loader.findClass("java.lang.Integer");
+			
+			try {	
+				Class result = _loader.findClass("java.lang.Integer");
+				assertNotNull(result);
+				assertEquals(result,Integer.class);
 			} catch (ClassNotFoundException e) {
 				fail("findClass should not fail with java.lang.Integer argument");
 			}
+			
 	    	
 	    }
     }
-    
+    */
 	@RunWith(Parameterized.class)
 	public static class TestMultiClassLoaderaddClassLoaders {
 	    private ClassLoader FOO_LOADER = new FooLoader();
 	    private ClassLoader FOO_LOADER2 = new FooLoader2();
+	    private static MultiClassLoader _loader = new MultiClassLoader(THREAD_LOADER,SYSTEM_LOADER);
 	    private static MultiClassLoader _loader0 = new MultiClassLoader();
 	    private static MultiClassLoader _loader1 = new MultiClassLoader();
 	    private static MultiClassLoader _loader2 = new MultiClassLoader();
@@ -114,11 +122,12 @@ public class TestMultiClassLoader{
 	    	assertEquals(actualResult, expectedResult);
 	    	
 	    }
-	    private static final class FooLoader extends ClassLoader {
+	   
+	}
+	 private static final class FooLoader extends ClassLoader {
 	    }
 	    
 	    private static final class FooLoader2 extends ClassLoader {
 	
 	    }
-	}
 }
