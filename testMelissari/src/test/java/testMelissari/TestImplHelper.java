@@ -202,7 +202,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			/*
+			
 			PCState pc = new PCState();
 			
 			try {
@@ -212,7 +212,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			
+			/*
 			try {
 				createMock(true,false,dirty,flushed, PCState.PDIRTY);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
