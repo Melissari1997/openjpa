@@ -57,7 +57,7 @@ public class TestImplHelper {
 	    		{null, null, false},
 	    		{conf, registeredPC.getClass(), true},
 	    		{conf, Integer.class, false},
-	    		
+	    		/*
 	    		//adeguacy
 	    		//{null, Integer.class, false},
 	    		//{null, registeredPC.getClass(), true},
@@ -69,7 +69,7 @@ public class TestImplHelper {
 	    	    {conf2, null, false},
 	    	    {conf, notRegisteredPC.getClass(), true},
 	    	    {null, Integer.class, false},
-
+	*/
 	    		
 	    		});
 	    		
@@ -105,12 +105,12 @@ public class TestImplHelper {
 	    		{new Foo().getClass(), new Foo().getClass(),true},
 	    		{new ExtendedFoo().getClass(), new Foo().getClass(), true},
 	    		{new Foo().getClass(), new Integer(1).getClass(),false},
-	    		
+	    		/*
 	    		// adeguacy
 	    		{new Foo().getClass(), null,false},
 	    		{null, new Foo().getClass(),false},
 	    		{Integer.class, new Foo().getClass(),false},
-	    		
+	    		*/
 	    		
 	    		});
 	    };
@@ -170,7 +170,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			
+			/*
 			try {
 				createMock(false,false, dirty, flushed ,PCState.PNEW);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
@@ -178,6 +178,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
+			
 			try {
 				createMock(true,false, dirty, flushed ,PCState.PNEW);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
@@ -185,6 +186,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
+			*/
 			try {
 				createMock(true,true, dirty, flushed ,PCState.PNEW);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
@@ -200,7 +202,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			
+			/*
 			PCState pc = new PCState();
 			
 			try {
@@ -241,6 +243,7 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
+			*/
 			
 		}
 		

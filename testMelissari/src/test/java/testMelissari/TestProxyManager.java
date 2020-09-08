@@ -47,9 +47,6 @@ public class TestProxyManager {
 		private Map<Integer, String> inputMap;
 		private Map<Integer, String> expectedMapResult;
 		
-		/**
-	     * Populate the given map with arbitrary data.
-	     */
 		@Before
 	    public void setup() {
 	        notEmptyMap.put(new Integer(1), "1");
@@ -103,10 +100,7 @@ public class TestProxyManager {
 		private static Integer[] notEmptyArray = new Integer[1];
 		private Object  inputArray;
 		private Integer[]  expectedArray;
-		
-		/**
-	     * Populate the given map with arbitrary data.
-	     */
+
 		@Before
 	    public void setup() {
 			notEmptyArray[0] = new Integer(1);
@@ -143,7 +137,7 @@ public class TestProxyManager {
 	    }
 	    
 	    /**
-	     * Assert that the given maps are exactly the same.
+	     * Assert that the given arrays are exactly the same.
 	     * 
 	     */
 	    private void assertArraysEquals(Integer[]  array1, Object array2) {
@@ -151,13 +145,10 @@ public class TestProxyManager {
 	        		assertNull(array2);
 	        		return;
 	    	}
-	        final Logger LOGGER = Logger.getLogger( TestCopyArray.class.getName());
-			LOGGER.log(Level.FINE, "{0}", array2);
 	    	assertTrue(array1.getClass() == array2.getClass()); //stesso tipo
 	        assertEquals(Array.getLength(array1), Array.getLength(array2)); //stessa grandezza
 	        Integer[] newarray2 = new Integer[Array.getLength(array2)];
 	        System.arraycopy(array2, 0, newarray2, 0, 1);
-	        System.out.println(newarray2[0]);
 	        assertTrue(Arrays.equals(array1, newarray2)); // stesso contenuto
 	    }
 	  }
@@ -168,19 +159,19 @@ public class TestProxyManager {
 		private TreeMap map;
 		private TreeMap customComparatorMap;
 		private CustomObject emptyFoo = new CustomObject();
-		private CustomCopyConstructorBean copyFoo =new CustomCopyConstructorBean(this.emptyFoo);
+		private CustomObject copyFoo;
 		
-		
-		/**
-	     * Populate the given map with arbitrary data.
-	     */
 		@Before
 	    public void setup() {
 			this.date = new Date();
 			long currentDate = 10;
 			this.customDate = new CustomDate(currentDate);
 			this.map = new TreeMap();
+			map.put(new Integer(1), "1");
+			map.put(new Integer(2), "2");
 			this.customComparatorMap = new TreeMap(new CustomComparator());
+			customComparatorMap.put(new Integer(1), "test");
+			customComparatorMap.put(new Integer(2), "test2");
 	    }
 
 	    @Test
@@ -216,7 +207,7 @@ public class TestProxyManager {
 	    }
 	    
 	    /**
-	     * Assert that the given date are exactly the same.
+	     * Assert that the given maps are exactly the same.
 	     */
 	    private void assertMapsEqual(Map map1, Object map2) {
 	    	if(map1 == null) {
@@ -231,16 +222,19 @@ public class TestProxyManager {
 	    @Test
 	    public void testCopyCustomObject() {
 	    	Object actualFooResult =  _proxyManager.copyCustom(this.emptyFoo);
-	    	assertBeansEqual(this.emptyFoo,actualFooResult);
-	    	assertNotNull(this.copyFoo);
+	    	assertCustomObjectEqual(this.emptyFoo,actualFooResult);
+	    	//assertNotNull(this.copyFoo);
+	    	this.emptyFoo.setNumber(1);
+	    	this.emptyFoo.setString("Changed");
+	    	this.copyFoo = new CustomObject(this.emptyFoo);
 	    	actualFooResult = _proxyManager.copyCustom(this.copyFoo);
-	    	assertBeansEqual(this.copyFoo,actualFooResult);
+	    	assertCustomObjectEqual(this.copyFoo,actualFooResult);
 	    }
 	    
 	    /**
 	     * Assert that the given beans are exactly the same.
 	     */
-	    private void assertBeansEqual(CustomObject b1, Object b2) {
+	    private void assertCustomObjectEqual(CustomObject b1, Object b2) {
 	    	if(b1 == null) {
 	    		assertNull(b2);
 	    		return;
@@ -260,7 +254,7 @@ public class TestProxyManager {
 	    public void testCopyCustomProxy() {
 	    	CustomObject orig =  (CustomObject)_proxyManager.newCustomProxy(new CustomObject(),true);
 	    	CustomObject comp = new CustomObject();
-	    	assertBeansEqual(comp, (CustomObject)_proxyManager.copyCustom(orig) );
+	    	assertCustomObjectEqual(comp, (CustomObject)_proxyManager.copyCustom(orig) );
 	    }
 	    
 	    @Test
@@ -295,25 +289,17 @@ public class TestProxyManager {
 	        }
 	    }
 	    
-	    public static class CustomComparatorSortedSet extends TreeSet {
-
-	        
-	        private static final long serialVersionUID = 1L;
-
-	        public CustomComparatorSortedSet() {
-	        }
-
-	        public CustomComparatorSortedSet(Comparator comp) {
-	            super(comp);
-	        }
-	    }
-	    /**
-	     * Used to test custom bean handling.
-	     */
 	    public static  class CustomObject {
 	        private String _string;
 	        private int _number;
-
+	        public CustomObject() {
+	        	this._string = "";
+	        	this._number = -1;
+	        }
+	        public CustomObject(CustomObject bean) {
+	            setString(bean.getString());
+	            setNumber(bean.getNumber());
+	        }
 	        public String getString() {
 	            return _string;
 	        }
@@ -331,30 +317,12 @@ public class TestProxyManager {
 	        }
 	    }
 
-	    /**
-	     * Used to test custom bean handling.
-	     */
-	    public static class CustomCopyConstructorBean extends CustomObject {
-
-	        public CustomCopyConstructorBean(CustomObject bean) {
-	            setString(bean.getString());
-	            setNumber(bean.getNumber());
-	        }
-	    }
 	    private static  class CustomComparator implements Comparator {
 
 	        @Override
 	        public int compare(Object o1, Object o2) {
-	            return ((Comparable) o1).compareTo(o2);
+	            return ((Comparable) o1).compareTo(o2)*-1;
 	        }
 	    }
 	  }
-	private static  class CustomComparator implements Comparator {
-
-        @Override
-        public int compare(Object o1, Object o2) {
-            return ((Comparable) o1).compareTo(o2);
-        }
-    }
-	
 }
