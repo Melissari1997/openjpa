@@ -57,19 +57,16 @@ public class TestImplHelper {
 	    		{null, null, false},
 	    		{conf, registeredPC.getClass(), true},
 	    		{conf, Integer.class, false},
-	    		/*
+	    		
 	    		//adeguacy
-	    		//{null, Integer.class, false},
-	    		//{null, registeredPC.getClass(), true},
-	    		//{conf2, registeredPC.getClass(), true},
-	    	    {conf2, Integer.class, false},
-	    		//{conf2, notRegisteredPC.getClass(), true},
-	    	    
+
+	    	   {conf2, Integer.class, false}, 
+	     
 	    	    //mutation
 	    	    {conf2, null, false},
 	    	    {conf, notRegisteredPC.getClass(), true},
-	    	    {null, Integer.class, false},
-	*/
+	    	   // {null, Integer.class, false},
+	
 	    		
 	    		});
 	    		
@@ -105,12 +102,13 @@ public class TestImplHelper {
 	    		{new Foo().getClass(), new Foo().getClass(),true},
 	    		{new ExtendedFoo().getClass(), new Foo().getClass(), true},
 	    		{new Foo().getClass(), new Integer(1).getClass(),false},
-	    		/*
+	    		
 	    		// adeguacy
 	    		{new Foo().getClass(), null,false},
 	    		{null, new Foo().getClass(),false},
-	    		{Integer.class, new Foo().getClass(),false},
-	    		*/
+	    		//mutation
+	    		{new Foo().getClass(),String.class, false},
+	    		
 	    		
 	    		});
 	    };
@@ -170,35 +168,17 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			/*
-			try {
-				createMock(false,false, dirty, flushed ,PCState.PNEW);
-				result = ImplHelper.getUpdateFields(mockedStateManager);
-				assertNull(result);
-			}catch(Exception e) {
-				
-			}
-			
-			try {
-				createMock(true,false, dirty, flushed ,PCState.PNEW);
-				result = ImplHelper.getUpdateFields(mockedStateManager);
-				assertNull(result);
-			}catch(Exception e) {
-				
-			}
-			*/
-			try {
-				createMock(true,true, dirty, flushed ,PCState.PNEW);
-				result = ImplHelper.getUpdateFields(mockedStateManager);
-				assertEquals(expectedResult,result);
-			}catch(Exception e) {
-				
-			}
-			
 			try {
 				createMock(true,true,dirty,flushed, PCState.PDIRTY);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
 				assertEquals(result,expectedResult);
+			}catch(Exception e) {
+				
+			}
+			try {
+				createMock(true,true, dirty, flushed ,PCState.PNEW);
+				result = ImplHelper.getUpdateFields(mockedStateManager);
+				assertEquals(expectedResult,result);
 			}catch(Exception e) {
 				
 			}
@@ -212,7 +192,8 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			/*
+			
+			//adeguacy
 			try {
 				createMock(true,false,dirty,flushed, PCState.PDIRTY);
 				result = ImplHelper.getUpdateFields(mockedStateManager);
@@ -227,6 +208,19 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
+			
+			//mutation
+
+			try {
+				createMock(true,false, dirty, flushed ,PCState.PNEW);
+				result = ImplHelper.getUpdateFields(mockedStateManager);
+				assertNull(result);
+			}catch(Exception e) {
+				
+			}
+			
+			
+			
 			try {
 				BitSet empty = new BitSet();
 				createMock(false,true,empty,flushed, PCState.PDIRTY);
@@ -235,15 +229,6 @@ public class TestImplHelper {
 			}catch(Exception e) {
 				
 			}
-			
-			try {
-				createMock(false,false,dirty,flushed, PCState.PDIRTY);
-				result = ImplHelper.getUpdateFields(mockedStateManager);
-				assertEquals(dirty,result);
-			}catch(Exception e) {
-				
-			}
-			*/
 			
 		}
 		

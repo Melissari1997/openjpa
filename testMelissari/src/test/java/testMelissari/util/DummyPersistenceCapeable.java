@@ -25,10 +25,7 @@ import org.apache.openjpa.enhance.PCRegistry;
 import org.apache.openjpa.enhance.PersistenceCapable;
 import org.apache.openjpa.enhance.StateManager;
 
-/**
- * This Object is here for the sole purpose of testing pcGetEnhancementContractVersion. This object isn't a tested
- * PersistenceCapable implementation so it shouldn't be used unless you are fully aware of what you are doing.
- */
+
 public class DummyPersistenceCapeable implements PersistenceCapable {
     private static String pcFieldNames[] = {"IntegerField"};
     private static Class pcFieldTypes[] = {Integer.class};
@@ -179,6 +176,6 @@ public class DummyPersistenceCapeable implements PersistenceCapable {
     }
 
     public DummyPersistenceCapeable() {
-    	
+
     }
 }
